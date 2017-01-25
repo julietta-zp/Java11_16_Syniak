@@ -7,7 +7,7 @@ public final class Controller {
 
     private final CommandProvider provider = new CommandProvider();
     private final char paramSeparator = '?';
-    private View view;
+    private View view;// если внимательно посмотришь на код, то это view в контроллере тебе вообще без надобности
 
     public void setView(View view){
         this.view = view;
