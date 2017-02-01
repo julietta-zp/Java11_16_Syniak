@@ -23,7 +23,7 @@ public class Controller {
 
         } catch (ServiceException e){
 
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, "an exception was thrown", e);
 
         }
 

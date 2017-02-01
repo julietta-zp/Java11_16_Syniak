@@ -7,7 +7,7 @@ enum NodeType {
 
     OPEN_TAG,
     CLOSE_TAG,
-    CONTENT,
+    TEXT,
     SELF_CLOSING_TAG,
 
 }

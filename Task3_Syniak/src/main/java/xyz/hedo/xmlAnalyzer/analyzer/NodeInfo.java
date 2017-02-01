@@ -29,8 +29,8 @@ public class NodeInfo {
         return (nodeType == NodeType.valueOf("CLOSE_TAG"));
     }
 
-    public boolean isContent(){
-        return (nodeType == NodeType.valueOf("CONTENT"));
+    public boolean isText(){
+        return (nodeType == NodeType.valueOf("TEXT"));
     }
 
     public boolean isSelfClosingTag(){

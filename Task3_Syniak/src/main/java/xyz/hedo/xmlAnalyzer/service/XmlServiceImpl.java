@@ -1,7 +1,7 @@
 package xyz.hedo.xmlAnalyzer.service;
 
-import xyz.hedo.xmlAnalyzer.DAO.DAOFactory;
-import xyz.hedo.xmlAnalyzer.DAO.exception.DAOException;
+import xyz.hedo.xmlAnalyzer.dao.DaoFactory;
+import xyz.hedo.xmlAnalyzer.dao.exception.DaoException;
 import xyz.hedo.xmlAnalyzer.analyzer.NodeInfo;
 import xyz.hedo.xmlAnalyzer.analyzer.XmlAnalyzer;
 import xyz.hedo.xmlAnalyzer.analyzer.exception.AnalyzerException;
@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class XmlServiceImpl implements XmlService {
 
-    private DAOFactory daoFactory = DAOFactory.getInstance();
+    private DaoFactory daoFactory = DaoFactory.getInstance();
 
     /**
      * analyzes xml document
@@ -28,20 +28,27 @@ public class XmlServiceImpl implements XmlService {
 
             String filePath = daoFactory.getXmlDAO().getAbsolutePath(fileName);
 
-            try(XmlAnalyzer xmlAnalyzer = new XmlAnalyzer(filePath)){
+            try(XmlAnalyzer xmlAnalyzer = new XmlAnalyzer()){
+                xmlAnalyzer.parse(filePath);
                 NodeInfo node;
                 while ((node = xmlAnalyzer.next()) != null){
                     // if it is a text content
-                    if (node.isContent()){
+                    if (node.isText()){
                         // then print node's info
                         System.out.println(node.getNodeType() + " " + node.getNodeContent());
                     }
+
+                    /*// if it is an open tag
+                    if (node.isOpenTag()){
+                        // then print node's info
+                        System.out.println(node.getNodeType() + " " + node.getNodeContent());
+                    }*/
                 }
             }catch (AnalyzerException | IOException e){
                 throw new ServiceException(e);
             }
 
-        }catch (DAOException e){
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
     }

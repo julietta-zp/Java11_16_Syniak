@@ -14,9 +14,7 @@ public class XmlAnalyzer implements Closeable{
 
     private XmlParser xmlParser;
 
-    public XmlAnalyzer(String pathName) throws AnalyzerException {
-
-        parse(pathName);
+    public XmlAnalyzer() {
 
     }
 
@@ -40,14 +38,15 @@ public class XmlAnalyzer implements Closeable{
      * @param pathName is a path name of xml file
      * @throws AnalyzerException
      */
-    private void parse(String pathName) throws AnalyzerException {
+    public void parse(String pathName) throws AnalyzerException {
         if (pathName == null || pathName.isEmpty()) {
-            throw new IllegalArgumentException("Path name cannot be empty or null");
+            throw new AnalyzerException("Path name cannot be empty or null");
         }
 
         File xmlFile = new File(pathName);
         try{
-            xmlParser = new XmlParserImpl(xmlFile);
+            xmlParser = new XmlParserImpl();
+            xmlParser.init(xmlFile);
         }catch (XmlParserException e){
             throw new AnalyzerException(e);
         }

@@ -18,7 +18,7 @@ public class XmlParserImpl implements XmlParser {
 
     private BufferedReader reader;
 
-    StringBuilder xmlText;
+    private StringBuilder xmlText;
 
     private String lineText;
 
@@ -30,9 +30,7 @@ public class XmlParserImpl implements XmlParser {
     // saves position of last found element
     private int position;
 
-    public XmlParserImpl(File file) throws XmlParserException {
-
-        init(file);
+    XmlParserImpl() {
 
     }
 
@@ -135,6 +133,8 @@ public class XmlParserImpl implements XmlParser {
         String singleTagRegEx = "<([^?]\\S+)([^</>]*?)>";
         String contentRegEx = ">?([^<>\\n]*)<?";
 
+        String slash = "/";
+
         Pattern fullElementPattern = Pattern.compile(fullElementRegEx);
         Pattern singleTagPattern = Pattern.compile(singleTagRegEx);
         Pattern contentPattern = Pattern.compile(contentRegEx);
@@ -165,7 +165,7 @@ public class XmlParserImpl implements XmlParser {
             // if a content
             if (fullElementMatcher.group(3) != null && !fullElementMatcher.group(3).isEmpty()){
 
-                tempNodeList.add(new NodeInfo(NodeType.CONTENT, fullElementMatcher.group(3).trim()));
+                tempNodeList.add(new NodeInfo(NodeType.TEXT, fullElementMatcher.group(3).trim()));
 
             }
 
@@ -184,11 +184,11 @@ public class XmlParserImpl implements XmlParser {
             if (singleTagMatcher.group(1) != null && !singleTagMatcher.group(1).isEmpty()) {
 
                 // if a close tag or a self-closing tag
-                if (singleTagMatcher.group(1).startsWith("/")) {
+                if (singleTagMatcher.group(1).startsWith(slash)) {
 
                     tempNodeList.add(new NodeInfo(NodeType.CLOSE_TAG, singleTagMatcher.group(1).trim().substring(1, singleTagMatcher.group(1).trim().length())));
 
-                } else if (singleTagMatcher.group(1).endsWith("/")) {
+                } else if (singleTagMatcher.group(1).endsWith(slash)) {
 
                     tempNodeList.add(new NodeInfo(NodeType.SELF_CLOSING_TAG, singleTagMatcher.group(1).trim().substring(0, singleTagMatcher.group(1).trim().length() - 1)));
 
@@ -216,7 +216,7 @@ public class XmlParserImpl implements XmlParser {
             // if a content
             if (contentMatcher.group(1) != null && !contentMatcher.group(1).isEmpty()) {
 
-                tempNodeList.add(new NodeInfo(NodeType.CONTENT, contentMatcher.group(1).trim()));
+                tempNodeList.add(new NodeInfo(NodeType.TEXT, contentMatcher.group(1).trim()));
 
             }
 
