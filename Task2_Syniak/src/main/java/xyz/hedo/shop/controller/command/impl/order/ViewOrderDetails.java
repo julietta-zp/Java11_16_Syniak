@@ -27,7 +27,7 @@ public class ViewOrderDetails implements Command {
         try{
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
-                if (key.equals("id")){
+                if (key.equals(PARAMETER_ID)){
                     id = Integer.parseInt(parameters.get(key));
                 }
             }
@@ -57,7 +57,7 @@ public class ViewOrderDetails implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot get equipment.";
             }
 

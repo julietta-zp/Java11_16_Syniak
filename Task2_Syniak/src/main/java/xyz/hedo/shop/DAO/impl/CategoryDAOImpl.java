@@ -15,6 +15,14 @@ public class CategoryDAOImpl implements CategoryDAO {
     private final String jdbcLogin = "root";
     private final String jdbcPassword = "root";
 
+    {
+        try{
+            Class.forName(jdbcDriver);
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Category> getAllCategories() throws DAOException {
         Connection con = null;
@@ -22,21 +30,18 @@ public class CategoryDAOImpl implements CategoryDAO {
         ResultSet res = null;
         List<Category> categories = new ArrayList<Category>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT id, name FROM categories";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
-                int id = res.getInt("id");
-                String name = res.getString("name");
+                int id = res.getInt(1);
+                String name = res.getString(2);
                 Category category = new Category();
                 category.setId(id);
                 category.setName(name);
                 categories.add(category);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -69,7 +74,6 @@ public class CategoryDAOImpl implements CategoryDAO {
         ResultSet res = null;
         Category category = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT name FROM categories WHERE id = ?";
             ps = con.prepareStatement(sql);
@@ -81,10 +85,8 @@ public class CategoryDAOImpl implements CategoryDAO {
             while (res.next()) {
                 category = new Category();
                 category.setId(categoryId);
-                category.setName(res.getString("name"));
+                category.setName(res.getString(1));
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -115,7 +117,6 @@ public class CategoryDAOImpl implements CategoryDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "INSERT INTO categories(name) VALUES(?)";
             ps = con.prepareStatement(sql);
@@ -126,8 +127,6 @@ public class CategoryDAOImpl implements CategoryDAO {
             } else if (rows > 0) {
                 System.out.println("Category was successfully added");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -151,7 +150,6 @@ public class CategoryDAOImpl implements CategoryDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "DELETE FROM categories WHERE id = ?";
             ps = con.prepareStatement(sql);
@@ -162,8 +160,6 @@ public class CategoryDAOImpl implements CategoryDAO {
             } else if (rows > 0) {
                 System.out.println("Category was successfully deleted");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {

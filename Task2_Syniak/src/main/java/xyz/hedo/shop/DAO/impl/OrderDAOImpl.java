@@ -16,6 +16,14 @@ public class OrderDAOImpl implements OrderDAO {
     private final String jdbcLogin = "root";
     private final String jdbcPassword = "root";
 
+    {
+        try{
+            Class.forName(jdbcDriver);
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Order> getAllOrders() throws DAOException{
         Connection con = null;
@@ -23,27 +31,24 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         List<Order> orders = new ArrayList<Order>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT o.id, o.user_id, o.datetime_from, o.datetime_to, o.total_price, o.created_at, u.first_name, u.last_name FROM orders AS o LEFT JOIN users AS u ON o.user_id = u.id";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 Order order = new Order();
-                order.setId(res.getInt("o.id"));
+                order.setId(res.getInt(1));
                 User user = new User();
-                user.setId(res.getInt("o.user_id"));
-                user.setFirstName(res.getString("u.first_name"));
-                user.setLastName(res.getString("u.last_name"));
+                user.setId(res.getInt(2));
+                user.setFirstName(res.getString(7));
+                user.setLastName(res.getString(8));
                 order.setUser(user);
-                order.setDateTimeFrom(res.getDate("o.datetime_from"));
-                order.setDateTimeTo(res.getDate("o.datetime_to"));
-                order.setTotalPrice(res.getDouble("o.total_price"));
-                order.setCreatedAt(res.getTimestamp("o.created_at"));
+                order.setDateTimeFrom(res.getDate(3));
+                order.setDateTimeTo(res.getDate(4));
+                order.setTotalPrice(res.getDouble(5));
+                order.setCreatedAt(res.getTimestamp(6));
                 orders.add(order);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -76,7 +81,6 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         Order order = new Order();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT o.user_id, o.datetime_from, o.datetime_to, o.total_price, o.active, o.created_at, u.first_name, u.last_name FROM orders AS o LEFT JOIN users AS u ON o.user_id = u.id WHERE o.id = ?";
             ps = con.prepareStatement(sql);
@@ -85,18 +89,16 @@ public class OrderDAOImpl implements OrderDAO {
             while (res.next()) {
                 order.setId(id);
                 User user = new User();
-                user.setId(res.getInt("o.user_id"));
-                user.setFirstName(res.getString("u.first_name"));
-                user.setLastName(res.getString("u.last_name"));
+                user.setId(res.getInt(1));
+                user.setFirstName(res.getString(7));
+                user.setLastName(res.getString(8));
                 order.setUser(user);
-                order.setActive(res.getBoolean("o.active"));
-                order.setDateTimeFrom(res.getDate("o.datetime_from"));
-                order.setDateTimeTo(res.getDate("o.datetime_to"));
-                order.setTotalPrice(res.getDouble("o.total_price"));
-                order.setCreatedAt(res.getTimestamp("o.created_at"));
+                order.setActive(res.getBoolean(5));
+                order.setDateTimeFrom(res.getDate(2));
+                order.setDateTimeTo(res.getDate(3));
+                order.setTotalPrice(res.getDouble(4));
+                order.setCreatedAt(res.getTimestamp(6));
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -127,7 +129,6 @@ public class OrderDAOImpl implements OrderDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "UPDATE orders SET orders.active = 0 WHERE orders.id = ?";
             ps = con.prepareStatement(sql);
@@ -138,8 +139,6 @@ public class OrderDAOImpl implements OrderDAO {
             } else if (rows > 0) {
                 System.out.println("The equipments were successfully returned!");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -166,7 +165,6 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         int createdOrderId = 0;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "INSERT INTO orders(user_id, datetime_from, datetime_to, total_price) VALUES(?,?,?,?)";
             ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -185,8 +183,6 @@ public class OrderDAOImpl implements OrderDAO {
                 }
                 System.out.println("Order was successfully created");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -219,28 +215,25 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         List<Order> orders = new ArrayList<Order>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT o.id, o.user_id, o.datetime_from, o.datetime_to, o.total_price, o.created_at, u.first_name, u.last_name, u.email FROM orders AS o LEFT JOIN users AS u ON o.user_id = u.id WHERE  o.active = 1";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 Order order = new Order();
-                order.setId(res.getInt("o.id"));
+                order.setId(res.getInt(1));
                 User user = new User();
-                user.setId(res.getInt("o.user_id"));
-                user.setFirstName(res.getString("u.first_name"));
-                user.setLastName(res.getString("u.last_name"));
-                user.setEmail(res.getString("u.email"));
+                user.setId(res.getInt(2));
+                user.setFirstName(res.getString(7));
+                user.setLastName(res.getString(8));
+                user.setEmail(res.getString(9));
                 order.setUser(user);
-                order.setDateTimeFrom(res.getDate("o.datetime_from"));
-                order.setDateTimeTo(res.getDate("o.datetime_to"));
-                order.setTotalPrice(res.getDouble("o.total_price"));
-                order.setCreatedAt(res.getTimestamp("o.created_at"));
+                order.setDateTimeFrom(res.getDate(3));
+                order.setDateTimeTo(res.getDate(4));
+                order.setTotalPrice(res.getDouble(5));
+                order.setCreatedAt(res.getTimestamp(6));
                 orders.add(order);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -273,28 +266,25 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         List<Order> orders = new ArrayList<Order>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT o.id, o.user_id, o.datetime_from, o.datetime_to, o.total_price, o.created_at, u.first_name, u.last_name, u.email FROM orders AS o LEFT JOIN users AS u ON o.user_id = u.id WHERE  o.datetime_to < CURRENT_DATE ";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 Order order = new Order();
-                order.setId(res.getInt("o.id"));
+                order.setId(res.getInt(1));
                 User user = new User();
-                user.setId(res.getInt("o.user_id"));
-                user.setFirstName(res.getString("u.first_name"));
-                user.setLastName(res.getString("u.last_name"));
-                user.setEmail(res.getString("u.email"));
+                user.setId(res.getInt(2));
+                user.setFirstName(res.getString(7));
+                user.setLastName(res.getString(8));
+                user.setEmail(res.getString(9));
                 order.setUser(user);
-                order.setDateTimeFrom(res.getDate("o.datetime_from"));
-                order.setDateTimeTo(res.getDate("o.datetime_to"));
-                order.setTotalPrice(res.getDouble("o.total_price"));
-                order.setCreatedAt(res.getTimestamp("o.created_at"));
+                order.setDateTimeFrom(res.getDate(3));
+                order.setDateTimeTo(res.getDate(4));
+                order.setTotalPrice(res.getDouble(5));
+                order.setCreatedAt(res.getTimestamp(6));
                 orders.add(order);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {

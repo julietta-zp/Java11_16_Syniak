@@ -29,16 +29,16 @@ public class SignUp implements Command {
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
                 switch (key){
-                    case "firstName":
+                    case PARAMETER_FIRST_NAME:
                         firstName = parameters.get(key);
                         break;
-                    case "lastName":
+                    case PARAMETER_LAST_NAME:
                         lastName = parameters.get(key);
                         break;
-                    case "email":
+                    case PARAMETER_EMAIL:
                         email = parameters.get(key);
                         break;
-                    case "password":
+                    case PARAMETER_PASSWORD:
                         password = parameters.get(key);
                         break;
                 }
@@ -59,7 +59,7 @@ public class SignUp implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot create user.";
             }
 

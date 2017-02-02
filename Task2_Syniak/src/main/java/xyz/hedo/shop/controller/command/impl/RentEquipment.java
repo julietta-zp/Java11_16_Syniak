@@ -31,22 +31,22 @@ public class RentEquipment implements Command {
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
                 switch (key){
-                    case "userId":
+                    case PARAMETER_USER_ID:
                         userId = Integer.parseInt(parameters.get(key));
                         break;
-                    case "from":
+                    case PARAMETER_FROM:
                         dateTimeFrom = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(parameters.get(key));
                         break;
-                    case "to":
+                    case PARAMETER_TO:
                         dateTimeTo = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(parameters.get(key));
                         break;
-                    case "itemId1":
+                    case PARAMETER_ITEM_ID_1:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
-                    case "itemId2":
+                    case PARAMETER_ITEM_ID_2:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
-                    case "itemId3":
+                    case PARAMETER_ITEM_ID_3:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
                 }
@@ -62,7 +62,7 @@ public class RentEquipment implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot rent equipment.";
             }
 

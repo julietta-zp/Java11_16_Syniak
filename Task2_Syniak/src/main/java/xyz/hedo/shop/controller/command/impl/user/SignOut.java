@@ -25,7 +25,7 @@ public class SignOut implements Command {
         try{
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
-                if (key.equals("email")){
+                if (key.equals(PARAMETER_EMAIL)){
                     email = parameters.get(key);
                 }
             }
@@ -39,7 +39,7 @@ public class SignOut implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot sign out user.";
             }
 

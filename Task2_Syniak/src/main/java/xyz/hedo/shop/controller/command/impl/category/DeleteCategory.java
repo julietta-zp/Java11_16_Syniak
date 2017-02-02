@@ -8,8 +8,12 @@ import xyz.hedo.shop.service.factory.ServiceFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DeleteCategory implements Command {
+
+    private static final Logger logger = Logger.getLogger(String.valueOf(DeleteCategory.class));
 
     @Override
     public String execute(String request) {
@@ -20,7 +24,7 @@ public class DeleteCategory implements Command {
         try{
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
-                if (key.equals("id")){
+                if (key.equals(PARAMETER_ID)){
                     id = Integer.parseInt(parameters.get(key));
                 }
             }
@@ -35,6 +39,7 @@ public class DeleteCategory implements Command {
 
             } catch (ServiceException e) {
                 // write log
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot delete category.";
             }
 

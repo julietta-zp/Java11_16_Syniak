@@ -35,7 +35,7 @@ public class ViewAllUsers implements Command {
 
         } catch (ServiceException e) {
             // write log
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, e.getMessage(), e);
             response = "Error during procedure.";
         }
 

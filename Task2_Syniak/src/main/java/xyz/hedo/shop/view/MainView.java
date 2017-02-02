@@ -20,7 +20,7 @@ public class MainView implements View {
         Controller controller = new Controller();
         MainView mainView = new MainView();
         mainView.setController(controller);
-        controller.setView(mainView);
+
 //        String request = "create_equipment?name=gloves&price=3&quantity=17&categoryId=1";
 //        String request = "sign_in?email=tester@mail.ru&password=qwerty";
 //        String request = "sign_up?firstName=dodge&lastName=marker&email=mi@gmail.com&password=12345";
@@ -35,10 +35,10 @@ public class MainView implements View {
 //        String request = "view_all_categories?";
 //        String request = "view_category_details?id=1";
 //        String request = "delete_equipment?id=4";
-//        String request = "view_all_equipments?";
+        String request = "view_all_equipments?";
 //        String request = "view_equipment_details?id=1";
 //        String request = "delete_user?id=1";
-        String request = "view_all_users?";
+//        String request = "view_all_users?";
 //        String request = "view_all_orders?";
 //        String request = "view_user_details?id=9";
 //        String request = "view_ails?id=9";

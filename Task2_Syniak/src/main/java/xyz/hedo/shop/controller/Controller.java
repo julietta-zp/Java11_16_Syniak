@@ -7,11 +7,6 @@ public final class Controller {
 
     private final CommandProvider provider = new CommandProvider();
     private final char paramSeparator = '?';
-    private View view;
-
-    public void setView(View view){
-        this.view = view;
-    }
 
     public String executeTask(String request){
 

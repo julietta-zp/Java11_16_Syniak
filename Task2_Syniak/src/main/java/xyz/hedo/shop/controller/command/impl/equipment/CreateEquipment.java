@@ -31,16 +31,16 @@ public class CreateEquipment implements Command {
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
                 switch (key){
-                    case "name":
+                    case PARAMETER_NAME:
                         name = parameters.get(key);
                         break;
-                    case "price":
+                    case PARAMETER_PRICE:
                         price = Double.parseDouble(parameters.get(key));
                         break;
-                    case "quantity":
+                    case PARAMETER_QUANTITY:
                         quantity = Integer.parseInt(parameters.get(key));
                         break;
-                    case "categoryId":
+                    case PARAMETER_CATEGORY_ID:
                         categoryId = Integer.parseInt(parameters.get(key));
                         break;
 
@@ -63,7 +63,7 @@ public class CreateEquipment implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot create equipment.";
             }
 

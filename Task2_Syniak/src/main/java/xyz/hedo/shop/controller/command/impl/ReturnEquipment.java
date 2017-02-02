@@ -28,16 +28,16 @@ public class ReturnEquipment implements Command {
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
                 switch (key){
-                    case "orderId":
+                    case PARAMETER_ORDER_ID:
                         orderId = Integer.parseInt(parameters.get(key));
                         break;
-                    case "itemId1":
+                    case PARAMETER_ITEM_ID_1:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
-                    case "itemId2":
+                    case PARAMETER_ITEM_ID_2:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
-                    case "itemId3":
+                    case PARAMETER_ITEM_ID_3:
                         equipmentIds.add(Integer.parseInt(parameters.get(key)));
                         break;
                 }
@@ -53,7 +53,7 @@ public class ReturnEquipment implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error.";
             }
 

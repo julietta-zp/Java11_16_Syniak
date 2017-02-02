@@ -15,6 +15,14 @@ public class EquipmentDAOImpl implements EquipmentDAO {
     private final String jdbcLogin = "root";
     private final String jdbcPassword = "root";
 
+    {
+        try{
+            Class.forName(jdbcDriver);
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Equipment> getAllEquipments() throws DAOException{
         Connection con = null;
@@ -22,25 +30,22 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         ResultSet res = null;
         List<Equipment> items = new ArrayList<Equipment>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "SELECT * FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id";
+            String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 Category category = new Category();
-                category.setId(res.getInt("cat.id"));
-                category.setName(res.getString("cat.name"));
+                category.setId(res.getInt(5));
+                category.setName(res.getString(6));
                 Equipment item = new Equipment();
-                item.setId(res.getInt("id"));
-                item.setName(res.getString("name"));
-                item.setPrice(res.getDouble("price"));
-                item.setQuantity(res.getInt("quantity"));
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
                 item.setCategory(category);
                 items.add(item);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -73,7 +78,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         ResultSet res = null;
         List<Equipment> items = new ArrayList<Equipment>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id WHERE eq.category_id = ?";
             ps = con.prepareStatement(sql);
@@ -81,18 +85,16 @@ public class EquipmentDAOImpl implements EquipmentDAO {
             res = ps.executeQuery();
             while (res.next()) {
                 Category cat = new Category();
-                cat.setId(res.getInt("cat.id"));
-                cat.setName(res.getString("cat.name"));
+                cat.setId(res.getInt(5));
+                cat.setName(res.getString(6));
                 Equipment item = new Equipment();
-                item.setId(res.getInt("eq.id"));
-                item.setName(res.getString("eq.name"));
-                item.setPrice(res.getDouble("eq.price"));
-                item.setQuantity(res.getInt("eq.quantity"));
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
                 item.setCategory(cat);
                 items.add(item);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -125,7 +127,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         ResultSet res = null;
         Equipment item = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id WHERE eq.id = ?";
             ps = con.prepareStatement(sql);
@@ -136,17 +137,15 @@ public class EquipmentDAOImpl implements EquipmentDAO {
             }
             while (res.next()) {
                 Category category = new Category();
-                category.setId(res.getInt("cat.id"));
-                category.setName(res.getString("cat.name"));
+                category.setId(res.getInt(5));
+                category.setName(res.getString(6));
                 item = new Equipment();
-                item.setId(res.getInt("eq.id"));
-                item.setName(res.getString("eq.name"));
-                item.setPrice(res.getDouble("eq.price"));
-                item.setQuantity(res.getInt("eq.quantity"));
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
                 item.setCategory(category);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -177,7 +176,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "INSERT INTO equipments(name, price, quantity, category_id) VALUES(?,?,?,?)";
             ps = con.prepareStatement(sql);
@@ -191,8 +189,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
             } else if (rows > 0) {
                 System.out.println("Equipment was successfully added");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -216,7 +212,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "DELETE FROM equipments WHERE id = ?";
             ps = con.prepareStatement(sql);
@@ -227,8 +222,6 @@ public class EquipmentDAOImpl implements EquipmentDAO {
             } else if (rows > 0) {
                 System.out.println("Equipment was successfully deleted");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {

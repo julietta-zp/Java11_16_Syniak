@@ -26,7 +26,7 @@ public class CreateCategory implements Command {
         try{
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
-                if (key.equals("name")){
+                if (key.equals(PARAMETER_NAME)){
                     name = parameters.get(key);
                 }
             }
@@ -43,7 +43,7 @@ public class CreateCategory implements Command {
 
             } catch (ServiceException e) {
                 // write log
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
                 response = "Error. Cannot create category.";
             }
 

@@ -15,12 +15,19 @@ public class UserDAOImpl implements UserDAO {
     private final String jdbcLogin = "root";
     private final String jdbcPassword = "root";
 
+    {
+        try{
+            Class.forName(jdbcDriver);
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void signIn(String email, String password) throws DAOException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "UPDATE users SET users.status = 1 WHERE users.email = ? AND users.password = ?";
             ps = con.prepareStatement(sql);
@@ -32,8 +39,6 @@ public class UserDAOImpl implements UserDAO {
             } else if (rows > 0) {
                 System.out.println("You were successfully signed in!");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -57,7 +62,6 @@ public class UserDAOImpl implements UserDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "UPDATE users SET users.status = 0 WHERE users.email = ?";
             ps = con.prepareStatement(sql);
@@ -68,8 +72,6 @@ public class UserDAOImpl implements UserDAO {
             } else if (rows > 0) {
                 System.out.println("You were successfully signed out!");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -95,22 +97,19 @@ public class UserDAOImpl implements UserDAO {
         ResultSet res = null;
         List<User> users = new ArrayList<User>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT id, first_name, last_name, email FROM users";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 User user = new User();
-                user.setId(res.getInt("id"));
-                user.setFirstName(res.getString("first_name"));
-                user.setLastName(res.getString("last_name"));
-                user.setEmail(res.getString("email"));
+                user.setId(res.getInt(1));
+                user.setFirstName(res.getString(2));
+                user.setLastName(res.getString(3));
+                user.setEmail(res.getString(4));
                 users.add(user);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
-        }catch (ClassNotFoundException e){
             throw new DAOException(e);
         }finally {
             try {
@@ -142,7 +141,6 @@ public class UserDAOImpl implements UserDAO {
         ResultSet res = null;
         User user = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT id, first_name, last_name, email, created_at, updated_at FROM users WHERE id = ?";
             ps = con.prepareStatement(sql);
@@ -153,15 +151,13 @@ public class UserDAOImpl implements UserDAO {
             }
             while (res.next()) {
                 user = new User();
-                user.setId(res.getInt("id"));
-                user.setFirstName(res.getString("first_name"));
-                user.setLastName(res.getString("last_name"));
-                user.setEmail(res.getString("email"));
-                user.setCreatedAt(res.getTimestamp("created_at"));
-                user.setUpdatedAt(res.getTimestamp("updated_at"));
+                user.setId(res.getInt(1));
+                user.setFirstName(res.getString(2));
+                user.setLastName(res.getString(3));
+                user.setEmail(res.getString(4));
+                user.setCreatedAt(res.getTimestamp(5));
+                user.setUpdatedAt(res.getTimestamp(6));
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -192,7 +188,6 @@ public class UserDAOImpl implements UserDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "INSERT INTO users(first_name, last_name, email, password) VALUES(?,?,?,?)";
             ps = con.prepareStatement(sql);
@@ -206,8 +201,6 @@ public class UserDAOImpl implements UserDAO {
             } else if (rows > 0) {
                 System.out.println("Profile was successfully created!");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -231,7 +224,6 @@ public class UserDAOImpl implements UserDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "DELETE FROM users WHERE id = ?";
             ps = con.prepareStatement(sql);
@@ -242,8 +234,6 @@ public class UserDAOImpl implements UserDAO {
             } else if (rows > 0) {
                 System.out.println("User was successfully deleted");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {

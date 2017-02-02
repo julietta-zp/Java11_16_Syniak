@@ -1,6 +1,7 @@
 package xyz.hedo.shop.DAO.factory;
 
 import xyz.hedo.shop.DAO.*;
+import xyz.hedo.shop.DAO.exception.DAOException;
 import xyz.hedo.shop.DAO.impl.*;
 
 public class DAOFactory {

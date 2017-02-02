@@ -18,6 +18,14 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
     private final String jdbcLogin = "root";
     private final String jdbcPassword = "root";
 
+    {
+        try{
+            Class.forName(jdbcDriver);
+        }catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public List<Integer> getOrderEquipmentIds(int orderId) throws DAOException{
         Connection con = null;
@@ -25,17 +33,14 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
         ResultSet res = null;
         List<Integer> orderEquipmentIds = new ArrayList<>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "SELECT equipment_id AS item FROM rent_shop.orders_m2m_equipments AS oe WHERE order_id = ?";
+            String sql = "SELECT equipment_id FROM rent_shop.orders_m2m_equipments AS oe WHERE order_id = ?";
             ps = con.prepareStatement(sql);
             ps.setInt(1, orderId);
             res = ps.executeQuery();
             while (res.next()) {
-                orderEquipmentIds.add(res.getInt("item"));
+                orderEquipmentIds.add(res.getInt(1));
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -69,16 +74,13 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
         ResultSet res = null;
         Map<Integer, Integer> borrowedEquipmentsQuantity = new HashMap<>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT equipment_id, count(equipment_id) AS qty FROM rent_shop.orders_m2m_equipments AS oe LEFT JOIN rent_shop.orders AS o ON oe.order_id = o.id WHERE o.active = 1 GROUP BY equipment_id";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
-                borrowedEquipmentsQuantity.put(res.getInt("equipment_id"), res.getInt("qty"));
+                borrowedEquipmentsQuantity.put(res.getInt(1), res.getInt(2));
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -109,7 +111,6 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             StringBuilder sql = new StringBuilder("INSERT INTO orders_m2m_equipments(order_id, equipment_id) VALUES(?,?)");
             for (int i = 0; i < equipments.size()-1; i++) {
@@ -127,8 +128,6 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
             } else if (rows > 0) {
                 System.out.println("Order items were successfully added");
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
@@ -154,7 +153,6 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
         ResultSet res = null;
         List<Equipment> orderEquipments = new ArrayList<>();
         try {
-            Class.forName(jdbcDriver);
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT equipment_id, e.name, e.price, e.quantity, c.name, c.id FROM rent_shop.orders_m2m_equipments AS oe LEFT JOIN rent_shop.equipments AS e ON oe.equipment_id = e.id LEFT JOIN rent_shop.categories AS c ON e.category_id = c.id WHERE oe.order_id = ?";
             ps = con.prepareStatement(sql);
@@ -162,18 +160,16 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
             res = ps.executeQuery();
             while (res.next()) {
                 Equipment equipment = new Equipment();
-                equipment.setId(res.getInt("equipment_id"));
-                equipment.setName(res.getString("name"));
-                equipment.setPrice(res.getDouble("price"));
-                equipment.setQuantity(res.getInt("quantity"));
+                equipment.setId(res.getInt(1));
+                equipment.setName(res.getString(2));
+                equipment.setPrice(res.getDouble(3));
+                equipment.setQuantity(res.getInt(4));
                 Category category = new Category();
-                category.setName(res.getString("c.name"));
-                category.setId(res.getInt("c.id"));
+                category.setName(res.getString(5));
+                category.setId(res.getInt(6));
                 equipment.setCategory(category);
                 orderEquipments.add(equipment);
             }
-        }catch (ClassNotFoundException e){
-            throw new DAOException(e);
         }catch (SQLException e){
             throw new DAOException(e);
         }finally {
