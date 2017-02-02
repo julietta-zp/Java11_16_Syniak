@@ -23,14 +23,15 @@ public class OrderDAOImpl implements OrderDAO {
         ResultSet res = null;
         List<Order> orders = new ArrayList<Order>();
         try {
-            Class.forName(jdbcDriver);
+            Class.forName(jdbcDriver);// драйвер грузится один раз, а не в каждом методе
+            // а то как-то чересчур
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
             String sql = "SELECT o.id, o.user_id, o.datetime_from, o.datetime_to, o.total_price, o.created_at, u.first_name, u.last_name FROM orders AS o LEFT JOIN users AS u ON o.user_id = u.id";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
                 Order order = new Order();
-                order.setId(res.getInt("o.id"));
+                order.setId(res.getInt("o.id"));// именуем константные строки
                 User user = new User();
                 user.setId(res.getInt("o.user_id"));
                 user.setFirstName(res.getString("u.first_name"));
@@ -50,7 +51,7 @@ public class OrderDAOImpl implements OrderDAO {
             try {
                 if (res != null) res.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                e.printStackTrace();// и ты же уже использовала лог)зачем тут printStackTrace?
             }
 
             try {

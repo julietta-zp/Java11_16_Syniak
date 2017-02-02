@@ -60,7 +60,7 @@ final class CommandProvider {
             command = repository.get(commandName);
         }catch(IllegalArgumentException | NullPointerException e){
             //write log
-            logger.log(Level.SEVERE, e.getMessage());
+            logger.log(Level.SEVERE, e.getMessage());// всегда логгируем весь объект-исключение, а не только строку-сообщение
             command = repository.get(CommandName.WRONG_REQUEST);
         }
 

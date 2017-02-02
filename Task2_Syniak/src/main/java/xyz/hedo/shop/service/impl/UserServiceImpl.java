@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
-    private DAOFactory dao = DAOFactory.getInstance();
+    private DAOFactory dao = DAOFactory.getInstance();// такое 
     private UserDAO userDAO = dao.getUserDAO();
     private OrderDAO orderDAO = dao.getOrderDAO();
     private EquipmentDAO equipmentDAO = dao.getEquipmentDAO();

@@ -27,7 +27,7 @@ public class ViewOrderDetails implements Command {
         try{
             Map<String, String> parameters = CustomUrlHelper.splitQuery(request);
             for (String key : parameters.keySet()) {
-                if (key.equals("id")){
+                if (key.equals("id")){// не забывай именовать константные строки
                     id = Integer.parseInt(parameters.get(key));
                 }
             }
