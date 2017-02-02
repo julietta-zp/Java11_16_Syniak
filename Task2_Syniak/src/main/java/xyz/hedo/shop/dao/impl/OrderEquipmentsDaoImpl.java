@@ -1,7 +1,7 @@
-package xyz.hedo.shop.DAO.impl;
+package xyz.hedo.shop.dao.impl;
 
-import xyz.hedo.shop.DAO.OrderEquipmentsDAO;
-import xyz.hedo.shop.DAO.exception.DAOException;
+import xyz.hedo.shop.dao.OrderEquipmentsDao;
+import xyz.hedo.shop.dao.exception.DaoException;
 import xyz.hedo.shop.bean.Category;
 import xyz.hedo.shop.bean.Equipment;
 
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
+public class OrderEquipmentsDaoImpl implements OrderEquipmentsDao {
 
     private final String jdbcDriver = "org.gjt.mm.mysql.Driver";
     private final String jdbcUrl = "jdbc:mysql://127.0.0.1/rent_shop";
@@ -27,7 +27,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
     }
 
     @Override
-    public List<Integer> getOrderEquipmentIds(int orderId) throws DAOException{
+    public List<Integer> getOrderEquipmentIds(int orderId) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet res = null;
@@ -42,7 +42,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
                 orderEquipmentIds.add(res.getInt(1));
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -68,7 +68,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
 
     // returns map of equipment ids and its quantity
     @Override
-    public Map<Integer, Integer> countBorrowedEquipments() throws DAOException {
+    public Map<Integer, Integer> countBorrowedEquipments() throws DaoException {
         Connection con = null;
         Statement st = null;
         ResultSet res = null;
@@ -82,7 +82,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
                 borrowedEquipmentsQuantity.put(res.getInt(1), res.getInt(2));
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -107,7 +107,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
     }
 
     @Override
-    public void addEquipmentsToOrder(int orderId, List<Equipment> equipments) throws DAOException {
+    public void addEquipmentsToOrder(int orderId, List<Equipment> equipments) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
@@ -129,7 +129,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
                 System.out.println("Order items were successfully added");
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (ps != null) ps.close();
@@ -147,7 +147,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
     }
 
     @Override
-    public List<Equipment> getOrderEquipments(int orderId) throws DAOException {
+    public List<Equipment> getOrderEquipments(int orderId) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet res = null;
@@ -171,7 +171,7 @@ public class OrderEquipmentsDAOImpl implements OrderEquipmentsDAO {
                 orderEquipments.add(equipment);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();

@@ -1,7 +1,7 @@
-package xyz.hedo.shop.DAO.impl;
+package xyz.hedo.shop.dao.impl;
 
-import xyz.hedo.shop.DAO.OrderDAO;
-import xyz.hedo.shop.DAO.exception.DAOException;
+import xyz.hedo.shop.dao.OrderDao;
+import xyz.hedo.shop.dao.exception.DaoException;
 import xyz.hedo.shop.bean.Order;
 import xyz.hedo.shop.bean.User;
 
@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-public class OrderDAOImpl implements OrderDAO {
+public class OrderDaoImpl implements OrderDao {
 
     private final String jdbcDriver = "org.gjt.mm.mysql.Driver";
     private final String jdbcUrl = "jdbc:mysql://127.0.0.1/rent_shop";
@@ -25,7 +25,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getAllOrders() throws DAOException{
+    public List<Order> getAllOrders() throws DaoException {
         Connection con = null;
         Statement st = null;
         ResultSet res = null;
@@ -50,7 +50,7 @@ public class OrderDAOImpl implements OrderDAO {
                 orders.add(order);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -75,7 +75,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public Order getOrderById(int id) throws DAOException {
+    public Order getOrderById(int id) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet res = null;
@@ -100,7 +100,7 @@ public class OrderDAOImpl implements OrderDAO {
                 order.setCreatedAt(res.getTimestamp(6));
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -125,7 +125,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public void closeOrder(int id) throws DAOException {
+    public void closeOrder(int id) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
@@ -140,7 +140,7 @@ public class OrderDAOImpl implements OrderDAO {
                 System.out.println("The equipments were successfully returned!");
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (ps != null) ps.close();
@@ -159,7 +159,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     // returns created order id
     @Override
-    public Integer createOrder(int userId, Date datetimeFrom, Date datetimeTo, double totalPrice) throws DAOException {
+    public Integer createOrder(int userId, Date datetimeFrom, Date datetimeTo, double totalPrice) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet res = null;
@@ -184,7 +184,7 @@ public class OrderDAOImpl implements OrderDAO {
                 System.out.println("Order was successfully created");
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -209,7 +209,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getAllActiveOrders() throws DAOException {
+    public List<Order> getAllActiveOrders() throws DaoException {
         Connection con = null;
         Statement st = null;
         ResultSet res = null;
@@ -235,7 +235,7 @@ public class OrderDAOImpl implements OrderDAO {
                 orders.add(order);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -260,7 +260,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> getAllExpiredOrders() throws DAOException {
+    public List<Order> getAllExpiredOrders() throws DaoException {
         Connection con = null;
         Statement st = null;
         ResultSet res = null;
@@ -286,7 +286,7 @@ public class OrderDAOImpl implements OrderDAO {
                 orders.add(order);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();

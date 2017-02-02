@@ -1,11 +1,11 @@
 package xyz.hedo.shop.service.impl;
 
-import xyz.hedo.shop.DAO.EquipmentDAO;
-import xyz.hedo.shop.DAO.OrderDAO;
-import xyz.hedo.shop.DAO.OrderEquipmentsDAO;
-import xyz.hedo.shop.DAO.UserDAO;
-import xyz.hedo.shop.DAO.exception.DAOException;
-import xyz.hedo.shop.DAO.factory.DAOFactory;
+import xyz.hedo.shop.dao.EquipmentDao;
+import xyz.hedo.shop.dao.OrderDao;
+import xyz.hedo.shop.dao.OrderEquipmentsDao;
+import xyz.hedo.shop.dao.UserDao;
+import xyz.hedo.shop.dao.exception.DaoException;
+import xyz.hedo.shop.dao.factory.DaoFactory;
 import xyz.hedo.shop.bean.Equipment;
 import xyz.hedo.shop.bean.Order;
 import xyz.hedo.shop.bean.User;
@@ -22,11 +22,11 @@ import java.util.Map;
 
 public class UserServiceImpl implements UserService {
 
-    private DAOFactory dao = DAOFactory.getInstance();
-    private UserDAO userDAO = dao.getUserDAO();
-    private OrderDAO orderDAO = dao.getOrderDAO();
-    private EquipmentDAO equipmentDAO = dao.getEquipmentDAO();
-    private OrderEquipmentsDAO orderEquipmentsDAO = dao.getOrderEquipmentsDAO();
+    private DaoFactory dao = DaoFactory.getInstance();
+    private UserDao userDao = dao.getUserDao();
+    private OrderDao orderDao = dao.getOrderDao();
+    private EquipmentDao equipmentDao = dao.getEquipmentDao();
+    private OrderEquipmentsDao orderEquipmentsDao = dao.getOrderEquipmentsDao();
 
     @Override
     public void signUp(User user) throws ServiceException {
@@ -40,10 +40,10 @@ public class UserServiceImpl implements UserService {
             String purePassword = user.getPassword();
             String hashedPassword = hashPassword(purePassword);
             user.setPassword(hashedPassword);
-            userDAO.addUser(user);
+            userDao.addUser(user);
             // auto signing in after registration
             signIn(user.getEmail(), purePassword);
-        }catch(DAOException e){
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException("Incorrect password");
             }
             String hashedPassword = hashPassword(password);
-            userDAO.signIn(email, hashedPassword);
-        }catch(DAOException e){
+            userDao.signIn(email, hashedPassword);
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -70,8 +70,8 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("Enter your email.");
         }
         try{
-            userDAO.signOut(email);
-        }catch(DAOException e){
+            userDao.signOut(email);
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -82,8 +82,8 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() throws ServiceException {
         List<User> users;
         try{
-            users = userDAO.getAllUsers();
-        }catch(DAOException e){
+            users = userDao.getAllUsers();
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return users;
@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService {
         }
         User user;
         try{
-            user = userDAO.getUserById(id);
-        }catch(DAOException e){
+            user = userDao.getUserById(id);
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return user;
@@ -111,8 +111,8 @@ public class UserServiceImpl implements UserService {
 //            throw new ServiceException();
 //        }
 //        try{
-//            userDAO.addUser(user);
-//        }catch(DAOException e){
+//            userDao.addUser(user);
+//        }catch(DaoException e){
 //            throw new ServiceException(e);
 //        }
 //    }
@@ -124,8 +124,8 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("value of ID is negative or equals 0");
         }
         try{
-            userDAO.removeUser(id);
-        }catch(DAOException e){
+            userDao.removeUser(id);
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
         }
 
         try{
-            List<Equipment> allEquipments = equipmentDAO.getAllEquipments();
+            List<Equipment> allEquipments = equipmentDao.getAllEquipments();
             // list of wanted equipments
             List<Equipment> neededEquipments = new ArrayList<>();
             for (Equipment item : allEquipments) {
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
                 throw new ServiceException(sb.toString());
             }
 
-            Map<Integer, Integer> borrowedEquipments = orderEquipmentsDAO.countBorrowedEquipments();
+            Map<Integer, Integer> borrowedEquipments = orderEquipmentsDao.countBorrowedEquipments();
             List<Equipment> availableEquipments = new ArrayList<>();
             // check if wanted equipments are in stock
             if (borrowedEquipments.size() > 0){
@@ -207,11 +207,11 @@ public class UserServiceImpl implements UserService {
                 totalPrice += item.getPrice();
             }
             if (totalPrice != 0){
-                int orderId = orderDAO.createOrder(userId, datetimeFrom, datetimeTo, totalPrice);
-                orderEquipmentsDAO.addEquipmentsToOrder(orderId, availableEquipments);
+                int orderId = orderDao.createOrder(userId, datetimeFrom, datetimeTo, totalPrice);
+                orderEquipmentsDao.addEquipmentsToOrder(orderId, availableEquipments);
             }
 
-        }catch(DAOException e){
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -227,19 +227,19 @@ public class UserServiceImpl implements UserService {
         }
 
         try{
-            Order order = orderDAO.getOrderById(orderId);
+            Order order = orderDao.getOrderById(orderId);
 
             if (!order.isActive()){
                 throw new ServiceException("The order was already closed");
             }
 
-            List<Integer> orderEquipmentIds = orderEquipmentsDAO.getOrderEquipmentIds(orderId);
+            List<Integer> orderEquipmentIds = orderEquipmentsDao.getOrderEquipmentIds(orderId);
             if (orderEquipmentIds.containsAll(equipmentIds) && equipmentIds.containsAll(orderEquipmentIds)){
-                orderDAO.closeOrder(orderId);
+                orderDao.closeOrder(orderId);
             } else {
                 throw new ServiceException("It's not the same equipment that was borrowed");
             }
-        }catch(DAOException e){
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
     }

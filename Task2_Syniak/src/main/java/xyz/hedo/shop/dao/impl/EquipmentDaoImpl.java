@@ -1,14 +1,14 @@
-package xyz.hedo.shop.DAO.impl;
+package xyz.hedo.shop.dao.impl;
 
-import xyz.hedo.shop.DAO.UserDAO;
-import xyz.hedo.shop.DAO.exception.DAOException;
-import xyz.hedo.shop.bean.User;
+import xyz.hedo.shop.dao.EquipmentDao;
+import xyz.hedo.shop.dao.exception.DaoException;
+import xyz.hedo.shop.bean.Category;
+import xyz.hedo.shop.bean.Equipment;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class UserDAOImpl implements UserDAO {
+public class EquipmentDaoImpl implements EquipmentDao {
 
     private final String jdbcDriver = "org.gjt.mm.mysql.Driver";
     private final String jdbcUrl = "jdbc:mysql://127.0.0.1/rent_shop";
@@ -24,93 +24,30 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void signIn(String email, String password) throws DAOException {
-        Connection con = null;
-        PreparedStatement ps = null;
-        try {
-            con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "UPDATE users SET users.status = 1 WHERE users.email = ? AND users.password = ?";
-            ps = con.prepareStatement(sql);
-            ps.setString(1, email);
-            ps.setString(2, password);
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                System.out.println("Something went wrong.");
-            } else if (rows > 0) {
-                System.out.println("You were successfully signed in!");
-            }
-        }catch (SQLException e){
-            throw new DAOException(e);
-        }finally {
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    @Override
-    public void signOut(String email) throws DAOException {
-        Connection con = null;
-        PreparedStatement ps = null;
-        try {
-            con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "UPDATE users SET users.status = 0 WHERE users.email = ?";
-            ps = con.prepareStatement(sql);
-            ps.setString(1, email);
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                System.out.println("Something went wrong.");
-            } else if (rows > 0) {
-                System.out.println("You were successfully signed out!");
-            }
-        }catch (SQLException e){
-            throw new DAOException(e);
-        }finally {
-            try {
-                if (ps != null) ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    @Override
-    public List<User> getAllUsers() throws DAOException {
+    public List<Equipment> getAllEquipments() throws DaoException {
         Connection con = null;
         Statement st = null;
         ResultSet res = null;
-        List<User> users = new ArrayList<User>();
+        List<Equipment> items = new ArrayList<Equipment>();
         try {
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "SELECT id, first_name, last_name, email FROM users";
+            String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id";
             st = con.createStatement();
             res = st.executeQuery(sql);
             while (res.next()) {
-                User user = new User();
-                user.setId(res.getInt(1));
-                user.setFirstName(res.getString(2));
-                user.setLastName(res.getString(3));
-                user.setEmail(res.getString(4));
-                users.add(user);
+                Category category = new Category();
+                category.setId(res.getInt(5));
+                category.setName(res.getString(6));
+                Equipment item = new Equipment();
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
+                item.setCategory(category);
+                items.add(item);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -131,35 +68,35 @@ public class UserDAOImpl implements UserDAO {
             }
 
         }
-        return users;
+        return items;
     }
 
     @Override
-    public User getUserById(int id) throws DAOException{
+    public List<Equipment> getEquipmentsByCategory(int categoryId) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet res = null;
-        User user = null;
+        List<Equipment> items = new ArrayList<Equipment>();
         try {
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "SELECT id, first_name, last_name, email, created_at, updated_at FROM users WHERE id = ?";
+            String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id WHERE eq.category_id = ?";
             ps = con.prepareStatement(sql);
-            ps.setInt(1, id);
+            ps.setInt(1, categoryId);
             res = ps.executeQuery();
-            if (!res.isBeforeFirst() ) {
-                System.out.println("No such user was found");
-            }
             while (res.next()) {
-                user = new User();
-                user.setId(res.getInt(1));
-                user.setFirstName(res.getString(2));
-                user.setLastName(res.getString(3));
-                user.setEmail(res.getString(4));
-                user.setCreatedAt(res.getTimestamp(5));
-                user.setUpdatedAt(res.getTimestamp(6));
+                Category cat = new Category();
+                cat.setId(res.getInt(5));
+                cat.setName(res.getString(6));
+                Equipment item = new Equipment();
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
+                item.setCategory(cat);
+                items.add(item);
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (res != null) res.close();
@@ -180,29 +117,80 @@ public class UserDAOImpl implements UserDAO {
             }
 
         }
-        return user;
+        return items;
     }
 
     @Override
-    public void addUser(User user) throws DAOException{
+    public Equipment getEquipmentById(int id) throws DaoException {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet res = null;
+        Equipment item = null;
+        try {
+            con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
+            String sql = "SELECT eq.id, eq.name, eq.price, eq.quantity, cat.id, cat.name FROM equipments AS eq LEFT JOIN categories AS cat ON cat.id = eq.category_id WHERE eq.id = ?";
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            res = ps.executeQuery();
+            if (!res.isBeforeFirst() ) {
+                System.out.println("No such equipment was found");
+            }
+            while (res.next()) {
+                Category category = new Category();
+                category.setId(res.getInt(5));
+                category.setName(res.getString(6));
+                item = new Equipment();
+                item.setId(res.getInt(1));
+                item.setName(res.getString(2));
+                item.setPrice(res.getDouble(3));
+                item.setQuantity(res.getInt(4));
+                item.setCategory(category);
+            }
+        }catch (SQLException e){
+            throw new DaoException(e);
+        }finally {
+            try {
+                if (res != null) res.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return item;
+    }
+
+    @Override
+    public void addEquipment(Equipment equipment) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "INSERT INTO users(first_name, last_name, email, password) VALUES(?,?,?,?)";
+            String sql = "INSERT INTO equipments(name, price, quantity, category_id) VALUES(?,?,?,?)";
             ps = con.prepareStatement(sql);
-            ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassword());
+            ps.setString(1, equipment.getName());
+            ps.setDouble(2, equipment.getPrice());
+            ps.setInt(3, equipment.getQuantity());
+            ps.setInt(4, equipment.getCategory().getId());
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 System.out.println("Something went wrong.");
             } else if (rows > 0) {
-                System.out.println("Profile was successfully created!");
+                System.out.println("Equipment was successfully added");
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
             try {
                 if (ps != null) ps.close();
@@ -220,24 +208,23 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public void removeUser(int userId) throws DAOException{
+    public void removeEquipment(int itemId) throws DaoException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
             con = DriverManager.getConnection(jdbcUrl, jdbcLogin, jdbcPassword);
-            String sql = "DELETE FROM users WHERE id = ?";
+            String sql = "DELETE FROM equipments WHERE id = ?";
             ps = con.prepareStatement(sql);
-            ps.setInt(1, userId);
+            ps.setInt(1, itemId);
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 System.out.println("Nothing to delete. No such category");
             } else if (rows > 0) {
-                System.out.println("User was successfully deleted");
+                System.out.println("Equipment was successfully deleted");
             }
         }catch (SQLException e){
-            throw new DAOException(e);
+            throw new DaoException(e);
         }finally {
-
             try {
                 if (ps != null) ps.close();
             } catch (SQLException e) {

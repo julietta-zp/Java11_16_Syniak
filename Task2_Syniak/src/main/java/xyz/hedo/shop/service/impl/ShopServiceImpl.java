@@ -1,11 +1,11 @@
 package xyz.hedo.shop.service.impl;
 
-import xyz.hedo.shop.DAO.CategoryDAO;
-import xyz.hedo.shop.DAO.EquipmentDAO;
-import xyz.hedo.shop.DAO.OrderDAO;
-import xyz.hedo.shop.DAO.OrderEquipmentsDAO;
-import xyz.hedo.shop.DAO.exception.DAOException;
-import xyz.hedo.shop.DAO.factory.DAOFactory;
+import xyz.hedo.shop.dao.CategoryDao;
+import xyz.hedo.shop.dao.EquipmentDao;
+import xyz.hedo.shop.dao.OrderDao;
+import xyz.hedo.shop.dao.OrderEquipmentsDao;
+import xyz.hedo.shop.dao.exception.DaoException;
+import xyz.hedo.shop.dao.factory.DaoFactory;
 import xyz.hedo.shop.bean.Category;
 import xyz.hedo.shop.bean.Equipment;
 import xyz.hedo.shop.bean.Order;
@@ -16,18 +16,18 @@ import java.util.List;
 
 public class ShopServiceImpl implements ShopService {
 
-    private DAOFactory dao = DAOFactory.getInstance();
-    private OrderDAO orderDAO = dao.getOrderDAO();
-    private EquipmentDAO equipmentDAO = dao.getEquipmentDAO();
-    private CategoryDAO categoryDAO = dao.getCategoryDAO();
-    private OrderEquipmentsDAO orderEquipmentsDAO = dao.getOrderEquipmentsDAO();
+    private DaoFactory dao = DaoFactory.getInstance();
+    private OrderDao orderDao = dao.getOrderDao();
+    private EquipmentDao equipmentDao = dao.getEquipmentDao();
+    private CategoryDao categoryDao = dao.getCategoryDao();
+    private OrderEquipmentsDao orderEquipmentsDao = dao.getOrderEquipmentsDao();
 
     @Override
     public List<Order> getAllOrders() throws ServiceException {
         List<Order> orders;
         try{
-            orders = orderDAO.getAllOrders();
-        }catch(DAOException e){
+            orders = orderDao.getAllOrders();
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return orders;
@@ -37,8 +37,8 @@ public class ShopServiceImpl implements ShopService {
     public List<Order> getAllActiveOrders() throws ServiceException {
         List<Order> orders;
         try{
-            orders = orderDAO.getAllActiveOrders();
-        }catch(DAOException e){
+            orders = orderDao.getAllActiveOrders();
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return orders;
@@ -48,8 +48,8 @@ public class ShopServiceImpl implements ShopService {
     public List<Order> getAllExpiredOrders() throws ServiceException{
         List<Order> orders;
         try{
-            orders = orderDAO.getAllExpiredOrders();
-        }catch(DAOException e){
+            orders = orderDao.getAllExpiredOrders();
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return orders;
@@ -62,8 +62,8 @@ public class ShopServiceImpl implements ShopService {
         }
         Order order;
         try {
-            order = orderDAO.getOrderById(orderId);
-        }catch (DAOException e){
+            order = orderDao.getOrderById(orderId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return order;
@@ -76,8 +76,8 @@ public class ShopServiceImpl implements ShopService {
         }
         List<Equipment> equipments;
         try{
-            equipments = orderEquipmentsDAO.getOrderEquipments(orderId);
-        }catch(DAOException e){
+            equipments = orderEquipmentsDao.getOrderEquipments(orderId);
+        }catch(DaoException e){
             throw new ServiceException(e);
         }
         return equipments;
@@ -90,8 +90,8 @@ public class ShopServiceImpl implements ShopService {
         }
 
         try {
-            equipmentDAO.addEquipment(item);
-        }catch (DAOException e){
+            equipmentDao.addEquipment(item);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -102,8 +102,8 @@ public class ShopServiceImpl implements ShopService {
             throw new ServiceException("value of ID is negative or equals 0");
         }
         try {
-            equipmentDAO.removeEquipment(itemId);
-        }catch (DAOException e){
+            equipmentDao.removeEquipment(itemId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -112,8 +112,8 @@ public class ShopServiceImpl implements ShopService {
     public List<Equipment> getAllEquipments() throws ServiceException {
         List<Equipment> equipments;
         try {
-            equipments = equipmentDAO.getAllEquipments();
-        }catch (DAOException e){
+            equipments = equipmentDao.getAllEquipments();
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return equipments;
@@ -126,8 +126,8 @@ public class ShopServiceImpl implements ShopService {
         }
         Equipment equipment;
         try {
-            equipment = equipmentDAO.getEquipmentById(itemId);
-        }catch (DAOException e){
+            equipment = equipmentDao.getEquipmentById(itemId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return equipment;
@@ -140,8 +140,8 @@ public class ShopServiceImpl implements ShopService {
         }
         List<Equipment> equipments;
         try {
-            equipments = equipmentDAO.getEquipmentsByCategory(categoryId);
-        }catch (DAOException e){
+            equipments = equipmentDao.getEquipmentsByCategory(categoryId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return equipments;
@@ -150,8 +150,8 @@ public class ShopServiceImpl implements ShopService {
     @Override
     public void addCategory(Category category) throws ServiceException {
         try {
-            categoryDAO.addCategory(category);
-        }catch (DAOException e){
+            categoryDao.addCategory(category);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -160,8 +160,8 @@ public class ShopServiceImpl implements ShopService {
     public List<Category> getAllCategories() throws ServiceException{
         List<Category> categories;
         try {
-            categories = categoryDAO.getAllCategories();
-        }catch (DAOException e){
+            categories = categoryDao.getAllCategories();
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return categories;
@@ -173,8 +173,8 @@ public class ShopServiceImpl implements ShopService {
             throw new ServiceException("value of ID is negative or equals 0");
         }
         try {
-            categoryDAO.removeCategory(categoryId);
-        }catch (DAOException e){
+            categoryDao.removeCategory(categoryId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
     }
@@ -186,8 +186,8 @@ public class ShopServiceImpl implements ShopService {
         }
         Category category;
         try {
-            category = categoryDAO.getCategoryById(categoryId);
-        }catch (DAOException e){
+            category = categoryDao.getCategoryById(categoryId);
+        }catch (DaoException e){
             throw new ServiceException(e);
         }
         return category;
