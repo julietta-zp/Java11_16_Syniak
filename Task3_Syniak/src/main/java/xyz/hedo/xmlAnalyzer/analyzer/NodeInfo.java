@@ -22,18 +22,18 @@ public class NodeInfo {
     }
 
     public boolean isOpenTag(){
-        return (nodeType == NodeType.valueOf("OPEN_TAG"));
+        return (nodeType == NodeType.OPEN_TAG);
     }
 
     public boolean isCloseTag(){
-        return (nodeType == NodeType.valueOf("CLOSE_TAG"));
+        return (nodeType == NodeType.CLOSE_TAG);
     }
 
     public boolean isText(){
-        return (nodeType == NodeType.valueOf("TEXT"));
+        return (nodeType == NodeType.TEXT);
     }
 
     public boolean isSelfClosingTag(){
-        return (nodeType == NodeType.valueOf("SELF_CLOSING_TAG"));
+        return (nodeType == NodeType.SELF_CLOSING_TAG);
     }
 }
