@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://hedo.xyz/WebApp"
+            xmlns:tns="http://hedo.xyz/WebApp"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:complexType name="welcome-file-listType">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="welcome-file" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="filterType">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="filter-name"/>
+            <xsd:element type="xsd:string" name="filter-class"/>
+            <xsd:element type="tns:init-paramType" name="init-param" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="filter-mappingType">
+        <xsd:sequence maxOccurs="unbounded">
+            <xsd:element type="xsd:string" name="filter-name"/>
+            <xsd:element type="xsd:string" name="url-pattern"/>
+            <xsd:element type="tns:dispatcherType" name="dispatcher"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="dispatcherType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="FORWARD"/>
+            <xsd:enumeration value="INCLUDE"/>
+            <xsd:enumeration value="REQUEST"/>
+            <xsd:enumeration value="ERROR"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="listenerType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+            <xsd:element type="xsd:string" name="listener-class"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="servletType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+            <xsd:element type="xsd:string" name="servlet-name"/>
+            <xsd:element type="xsd:string" name="servlet-class"/>
+            <xsd:element type="tns:init-paramType" name="init-param" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="servlet-mappingType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+            <xsd:element type="xsd:string" name="servlet-name"/>
+            <xsd:element type="xsd:string" name="url-pattern" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="error-pageType">
+        <xsd:sequence maxOccurs="unbounded" minOccurs="0">
+            <xsd:choice>
+                <xsd:element type="xsd:string" name="exception-type"/>
+                <xsd:element type="xsd:positiveInteger" name="error-code"/>
+            </xsd:choice>
+            <xsd:element type="tns:pathType" name="location"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="pathType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="/.*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="init-paramType">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="param-name"/>
+            <xsd:element type="xsd:string" name="param-value"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="WebAppType">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element type="xsd:string" name="display-name"/>
+            <xsd:element type="tns:welcome-file-listType" name="welcome-file-list"/>
+            <xsd:element type="tns:filterType" name="filter"/>
+            <xsd:element type="tns:filter-mappingType" name="filter-mapping"/>
+            <xsd:element type="tns:listenerType" name="listener"/>
+            <xsd:element type="tns:servletType" name="servlet"/>
+            <xsd:element type="tns:servlet-mappingType" name="servlet-mapping"/>
+            <xsd:element type="tns:error-pageType" name="error-page"/>
+        </xsd:choice>
+        <xsd:attribute type="xsd:string" name="id"/>
+        <xsd:attribute type="xsd:string" name="version"/>
+    </xsd:complexType>
+
+    <xsd:element name="web-app" type="tns:WebAppType"/>
+
+</xsd:schema>
